@@ -5,14 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/sales")
-@Transactional
+@javax.transaction.Transactional
 public class SalesResource {
 
     private final SalesService service;
@@ -51,7 +50,7 @@ public class SalesResource {
         try {
             List<Ticket> tickets = service.getById(accountId);
             List<TicketDto> responseTickets = tickets.stream()
-                    .map(t -> new TicketDto(t.getConcert().getArtist(), t.getConcert().getGenre(), t.getConcert().getLocation().getName()))
+                    .map(t -> new TicketDto(t.getConcert().getArtist().getName(), t.getConcert().getArtist().getGenre(), t.getConcert().getLocation().getName()))
                     .collect(Collectors.toList());
             return ResponseEntity.ok(responseTickets);
         } catch (RuntimeException e) {
