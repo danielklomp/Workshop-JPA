@@ -4,31 +4,29 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.first8.hu.ticketsale.registration.Account;
 import nl.first8.hu.ticketsale.util.TestRepository;
-import nl.first8.hu.ticketsale.venue.Artist;
 import nl.first8.hu.ticketsale.venue.Concert;
-import nl.first8.hu.ticketsale.venue.Genre;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.util.List;
+import javax.persistence.EntityManager;
 
-import static jdk.internal.dynalink.support.Guards.isNull;
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import org.junit.Before;
+import static org.mockito.Matchers.isNull;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.jdbc.JdbcTestUtils;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -63,9 +61,8 @@ public class TicketRepositoryIntegrationTest {
     @Test
     public void testInsertTicket() throws Exception {
 
-        Artist artist = testRepository.createDefaultArtist("Ed Sheeren", Genre.HIPHOP);
         Account account = testRepository.createDefaultAccount("f.dejong@first8.nl");
-        Concert concert = testRepository.createDefaultConcert(artist, "Utrecht");
+        Concert concert = testRepository.createDefaultConcert("Parov Stellar", "Utrecht");
 
 
         mvc.perform(
@@ -82,10 +79,9 @@ public class TicketRepositoryIntegrationTest {
     @Test
     public void testGetTickets() throws Exception {
 
-        Artist artist = testRepository.createDefaultArtist("Ed Sheeren", Genre.HIPHOP);
         Account account = testRepository.createDefaultAccount("f.dejong@first8.nl");
-        Ticket ticketGorillaz = testRepository.createDefaultTicket(account, artist, "Utrecht");
-        Ticket ticketThieveryCo = testRepository.createDefaultTicket(account, artist, "Apeldoorn");
+        Ticket ticketGorillaz = testRepository.createDefaultTicket(account, "Gorillaz", "Utrecht");
+        Ticket ticketThieveryCo = testRepository.createDefaultTicket(account, "Thievery Cooperation", "Apeldoorn");
 
 
         MvcResult result = mvc.perform(
@@ -108,9 +104,9 @@ public class TicketRepositoryIntegrationTest {
 
     @Test
     public void testInsertSale() throws Exception {
-        Artist artist = testRepository.createDefaultArtist("Ed Sheeren", Genre.HIPHOP);
+
         Account account = testRepository.createDefaultAccount("t.poll@first8.nl");
-        Concert concert = testRepository.createDefaultConcert(artist, "Verdedig, Enschede");
+        Concert concert = testRepository.createDefaultConcert("Disturbed", "Verdedig, Enschede");
 
         MvcResult result = mvc.perform(
                 post("/sales/")
@@ -131,9 +127,9 @@ public class TicketRepositoryIntegrationTest {
 
     @Test
     public void testInsertSaleWithoutPayment() throws Exception {
-        Artist artist = testRepository.createDefaultArtist("Ed Sheeren", Genre.HIPHOP);
+
         Account account = testRepository.createDefaultAccount("t.poll@first8.nl");
-        Concert concert = testRepository.createDefaultConcert(artist, "Verdedig, Enschede");
+        Concert concert = testRepository.createDefaultConcert("Disturbed", "Verdedig, Enschede");
 
         mvc.perform(
                 post("/sales/")
