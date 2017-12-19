@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -20,6 +22,8 @@ public class Concert implements Serializable {
     private String artist;
 
     private String genre;
+
+    private Date dateOfconcert;
 
     @ManyToOne
     @JoinColumn(name = "location_id", referencedColumnName = "id")
