@@ -14,7 +14,7 @@ public class TicketDto {
 
     private String artist;
 
-    private String genre;
+    private Enum genre;
 
     private String location;
 
