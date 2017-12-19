@@ -36,6 +36,10 @@ public class SalesRepository {
         entityManager.persist(sale);
     }
 
+    public void insert(final Audittrail audittrail) {
+        entityManager.persist(audittrail);
+    }
+
     Optional<Sale> findSaleByTicket(final Ticket ticket) {
 
         try {

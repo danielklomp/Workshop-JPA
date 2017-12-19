@@ -31,6 +31,7 @@ public class SalesService {
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void insertSale(Long accountId, Long ticketId, Integer price) {
         insertSale(accountId, ticketId, price, Date.from(Instant.now()));
+
     }
 
     protected void insertSale(Long accountId, Long concertId, Integer price, final Date timestamp) {
@@ -45,7 +46,14 @@ public class SalesService {
         sale.setPrice(price);
         sale.setSellDate(timestamp);
 
+        insertAudittrail(account,sale);
+
         salesRepository.insert(sale);
+    }
+
+    public void insertAudittrail(Account accountId, Sale saleId){
+        Audittrail audittrail = new Audittrail(saleId, accountId);
+        salesRepository.insert(audittrail);
     }
 
     public Optional<Sale> getSale(Long accountId, Long concertId) {
